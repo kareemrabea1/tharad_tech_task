@@ -39,6 +39,10 @@ dependencies:
   pinput: ^5.0.0
   flutter_screenutil: ^5.9.3
   easy_localization: ^3.0.7
+  flutter_bloc: ^9.1.1
+  equatable: ^2.0.8
+  image_picker: ^1.2.1
+  image_cropper: ^11.0.0
 
 
 
