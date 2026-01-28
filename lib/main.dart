@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'features/auth/presentation/view/login_view.dart';
+import 'features/auth/presentation/view/otp_view.dart';
 import 'features/auth/presentation/view/singup_view.dart';
 
 void main() {
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
       title: 'Tharad Tech',
 
       theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.white)),
-      home: LoginView(),
+      home: OtpView(email: ''),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../../widget/custom_text_field.dart';
 import '../../widget/gradient_button.dart';
 
@@ -17,6 +18,7 @@ class _LoginViewState extends State<LoginView> {
   final TextEditingController passwordController = TextEditingController();
 
   bool rememberMe = false;
+  bool isPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +82,19 @@ class _LoginViewState extends State<LoginView> {
                   label: '********',
                   controller: passwordController,
                   isPassword: true,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      isPasswordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: AppColors.primary,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        isPasswordVisible = !isPasswordVisible;
+                      });
+                    },
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'كلمة المرور مطلوبة';
