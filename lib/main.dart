@@ -4,6 +4,7 @@ import 'features/auth/presentation/view/login_view.dart';
 import 'features/auth/presentation/view/otp_view.dart';
 import 'features/auth/presentation/view/signup_view.dart';
 import 'features/home/presentation/view/home_view.dart';
+import 'features/main_layout/presentation/view/main_layout_view.dart';
 import 'features/profile/presentation/view/profile_view.dart';
 
 void main() {
@@ -18,9 +19,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Tharad Tech',
-
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.white)),
-      home: ProfileView(),
+      theme: ThemeData(
+        colorScheme: .fromSeed(seedColor: Colors.white),
+        fontFamily: 'Tajawal',
+      ),
+      home: LoginView(),
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:pinput/pinput.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../main_layout/presentation/view/main_layout_view.dart';
 import '../../widget/gradient_button.dart';
 
 class OtpView extends StatefulWidget {
@@ -135,7 +136,15 @@ class _OtpViewState extends State<OtpView> {
                 GradientButton(
                   text: 'المتابعة',
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {}
+                    if (_formKey.currentState!.validate()) {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MainLayoutView(),
+                        ),
+                        (route) => false,
+                      );
+                    }
                   },
                 ),
               ],

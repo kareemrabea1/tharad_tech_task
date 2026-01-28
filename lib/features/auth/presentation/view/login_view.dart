@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:tharad_tech/features/auth/presentation/view/signup_view.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../main_layout/presentation/view/main_layout_view.dart';
 import '../../widget/custom_text_field.dart';
 import '../../widget/gradient_button.dart';
 
@@ -148,9 +150,12 @@ class _LoginViewState extends State<LoginView> {
                   text: 'تسجيل الدخول',
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      debugPrint('Email: ${emailController.text}');
-                      debugPrint('Password: ${passwordController.text}');
-                      debugPrint('Remember Me: $rememberMe');
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MainLayoutView(),
+                        ),
+                      );
                     }
                   },
                 ),
@@ -162,7 +167,14 @@ class _LoginViewState extends State<LoginView> {
                   children: [
                     const Text('ليس لديك حساب؟'),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SignupView(),
+                          ),
+                        );
+                      },
                       child: const Text('إنشاء حساب جديد'),
                     ),
                   ],

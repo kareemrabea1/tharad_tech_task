@@ -6,6 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:tharad_tech/core/constants/app_colors.dart';
 import '../../widget/custom_text_field.dart';
 import '../../widget/gradient_button.dart';
+import 'otp_view.dart';
 
 class SignupView extends StatefulWidget {
   const SignupView({super.key});
@@ -245,7 +246,13 @@ class _SignupViewState extends State<SignupView> {
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         debugPrint('Signup Success: ${nameController.text}');
-                        // Implement Sign up Logic here
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                OtpView(email: emailController.text),
+                          ),
+                        );
                       }
                     },
                   ),
@@ -257,7 +264,9 @@ class _SignupViewState extends State<SignupView> {
                     children: [
                       const Text('لديك حساب ؟'),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
                         child: const Text('تسجيل الدخول'),
                       ),
                     ],
