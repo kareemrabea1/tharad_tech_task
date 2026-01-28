@@ -12,7 +12,6 @@ class CustomTextField extends StatefulWidget {
   final String? Function(String?)? validator;
   final double? fontSize;
 
-  // 1. ضيف المتغيرين دول هنا
   final TextInputAction? textInputAction;
   final void Function(String)? onFieldSubmitted;
 
@@ -25,7 +24,6 @@ class CustomTextField extends StatefulWidget {
     this.keyboardType = TextInputType.text,
     this.validator,
     this.fontSize,
-    // 2. وضيفهم في الـ Constructor هنا
     this.textInputAction,
     this.onFieldSubmitted,
   });
@@ -51,9 +49,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
       keyboardType: widget.keyboardType,
       validator: widget.validator,
 
-      // 3. مرر القيم للـ TextFormField الأصلي هنا
-      textInputAction: widget.textInputAction, // زرار الكيبورد (Next/Done)
-      onFieldSubmitted: widget.onFieldSubmitted, // لما يدوس Enter
+      textInputAction: widget.textInputAction,
+      onFieldSubmitted: widget.onFieldSubmitted,
 
       style: TextStyle(
         color: Colors.black,

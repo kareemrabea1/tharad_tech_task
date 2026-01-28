@@ -15,18 +15,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: const Size(390, 844), // مقاس تصميمك
+      designSize: const Size(390, 844),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
         return BlocProvider(
-          // حقن الـ AuthCubit هنا عشان يكون متاح للتطبيق كله
           create: (context) => AuthCubit(),
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'Tharad Tech',
-
-            // إعدادات اللغة العربية (RTL)
             locale: const Locale('ar'),
             supportedLocales: const [Locale('ar')],
             localizationsDelegates: const [

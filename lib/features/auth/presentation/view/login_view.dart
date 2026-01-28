@@ -99,7 +99,6 @@ class _LoginViewState extends State<LoginView> {
                       label: 'Tharad@gmail.com',
                       controller: emailController,
                       keyboardType: TextInputType.emailAddress,
-                      // 3. تحسين التنقل بالكيبورد (Next)
                       textInputAction: TextInputAction.next,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -140,10 +139,8 @@ class _LoginViewState extends State<LoginView> {
                           cubit.changeLoginPasswordVisibility();
                         },
                       ),
-                      // 4. تحسين التنقل بالكيبورد (Done -> Login)
                       textInputAction: TextInputAction.done,
                       onFieldSubmitted: (_) {
-                        // لما يدوس Enter ينفذ اللوجين علطول
                         if (_formKey.currentState!.validate()) {
                           cubit.userLogin(
                             email: emailController.text,
@@ -173,7 +170,6 @@ class _LoginViewState extends State<LoginView> {
                                 setState(() {
                                   rememberMe = value ?? false;
                                 });
-                                // ملحوظة: هنا هتحتاج كود (CacheHelper) عشان تحفظ القيمة دي بجد
                               },
                             ),
                             Text(

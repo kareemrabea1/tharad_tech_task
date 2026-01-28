@@ -9,7 +9,6 @@ abstract class AuthState extends Equatable {
 
 class AuthInitial extends AuthState {}
 
-// --- Login States ---
 class AuthLoading extends AuthState {}
 
 class AuthSuccess extends AuthState {}
@@ -19,7 +18,6 @@ class AuthFailure extends AuthState {
   const AuthFailure({required this.errMessage});
 }
 
-// --- Signup States ---
 class SignupLoading extends AuthState {}
 
 class SignupSuccess extends AuthState {}
@@ -29,7 +27,6 @@ class SignupFailure extends AuthState {
   const SignupFailure({required this.errMessage});
 }
 
-// --- OTP States ---
 class OtpLoading extends AuthState {}
 
 class OtpSuccess extends AuthState {}
@@ -39,15 +36,13 @@ class OtpFailure extends AuthState {
   const OtpFailure({required this.errMessage});
 }
 
-// --- Visibility State ---
 class AuthPasswordVisibilityChanged extends AuthState {}
 
-// --- Image State (التعديل الجديد هنا) ---
 class AuthImageSelected extends AuthState {
-  final String imagePath; // بنستقبل مسار الصورة عشان الـ UI يتحدث
+  final String imagePath;
 
   const AuthImageSelected({required this.imagePath});
 
   @override
-  List<Object> get props => [imagePath]; // ضروري عشان المقارنة والتحديث
+  List<Object> get props => [imagePath];
 }

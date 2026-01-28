@@ -31,7 +31,6 @@ class _OtpViewState extends State<OtpView> {
 
   @override
   Widget build(BuildContext context) {
-    // إعدادات شكل الـ PinCode
     final defaultPinTheme = PinTheme(
       width: 50.w,
       height: 60.h,
@@ -60,7 +59,6 @@ class _OtpViewState extends State<OtpView> {
         body: BlocConsumer<AuthCubit, AuthState>(
           listener: (context, state) {
             if (state is OtpSuccess) {
-              // مسح كل الصفحات القديمة (Login, Signup, OTP) والبدء من الرئيسية
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => const MainLayoutView()),
@@ -122,7 +120,6 @@ class _OtpViewState extends State<OtpView> {
                       ),
                       Gap(40.h),
 
-                      // --- Pinput Field ---
                       Form(
                         key: _formKey,
                         child: Pinput(
@@ -137,14 +134,10 @@ class _OtpViewState extends State<OtpView> {
                             }
                             return null;
                           },
-                          // إضافة: لما يخلص كتابة الـ 5 أرقام يدوس Done
                           pinputAutovalidateMode:
                               PinputAutovalidateMode.onSubmit,
                           showCursor: true,
-                          onCompleted: (pin) {
-                            // ممكن تخليه يبعت الطلب أوتوماتيك أول ما يخلص كتابة
-                            // cubit.verifyOtp(otpCode: pin);
-                          },
+                          onCompleted: (pin) {},
                         ),
                       ),
 
@@ -160,7 +153,6 @@ class _OtpViewState extends State<OtpView> {
                               children: [
                                 TextButton(
                                   onPressed: () {
-                                    // هنا ممكن تستدعي دالة إعادة الإرسال في الـ Cubit لاحقاً
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                         content: Text("تم إعادة إرسال الرمز"),
@@ -188,7 +180,7 @@ class _OtpViewState extends State<OtpView> {
                               ],
                             ),
                             Text(
-                              '09:58 Sec', // ده عداد ثابت مؤقتاً
+                              '09:58 Sec',
                               style: TextStyle(
                                 color: Colors.grey,
                                 fontSize: 10.sp,
@@ -200,7 +192,6 @@ class _OtpViewState extends State<OtpView> {
                       ),
                       Gap(40.h),
 
-                      // --- Confirm Button ---
                       state is OtpLoading
                           ? const Center(
                               child: CircularProgressIndicator(
