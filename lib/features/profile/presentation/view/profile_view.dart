@@ -1,6 +1,7 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import '../../../../core/widgets/language_switcher.dart';
 import '../../../auth/widget/custom_text_field.dart';
 import '../../../auth/widget/gradient_button.dart';
 import '../../../home/widget/custom_background.dart';
@@ -39,29 +40,7 @@ class _ProfileViewState extends State<ProfileView> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: TextButton.icon(
-                  onPressed: () {},
-                  style: TextButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  ),
-                  icon: const Icon(
-                    Icons.language,
-                    size: 20,
-                    color: Color(0xFF2D8B86),
-                  ),
-                  label: const Text(
-                    "English",
-                    style: TextStyle(
-                      color: Colors.black87,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Tajawal',
-                    ),
-                  ),
-                ),
-              ),
+              const LanguageSwitcher(),
 
               const Gap(10),
               buildLabel(text: "اسم المستخدم"),

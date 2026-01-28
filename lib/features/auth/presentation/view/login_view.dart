@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:tharad_tech/features/auth/presentation/view/signup_view.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/widgets/language_switcher.dart';
 import '../../../main_layout/presentation/view/main_layout_view.dart';
 import '../../widget/custom_text_field.dart';
 import '../../widget/gradient_button.dart';
@@ -28,38 +30,47 @@ class _LoginViewState extends State<LoginView> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         body: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
           child: Form(
             key: _formKey,
             child: Column(
               children: [
-                const Gap(100),
+                Gap(80),
+                const LanguageSwitcher(),
+                Gap(90.h),
 
-                Image.asset('assets/images/logo.png', width: 178, height: 58),
-                const Gap(100),
-
-                const Text(
+                Image.asset(
+                  'assets/images/logo.png',
+                  width: 178.w,
+                  height: 58.h,
+                ),
+                Gap(100.h),
+                Text(
                   'تسجيل الدخول',
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.w700,
                     fontFamily: 'Tajawal',
                   ),
                 ),
-                const Gap(24),
-
-                const Align(
+                Gap(24.h),
+                Align(
                   alignment: AlignmentDirectional.centerStart,
                   child: Text(
                     'البريد الإلكتروني',
-                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 10),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 10.sp,
+                      fontFamily: 'Tajawal',
+                    ),
                   ),
                 ),
-                const Gap(8),
+                Gap(8.h),
                 CustomTextField(
                   label: 'Tharad@gmail.com',
                   controller: emailController,
                   keyboardType: TextInputType.emailAddress,
+                  fontSize: 12.sp,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'البريد الإلكتروني مطلوب';
@@ -70,26 +81,31 @@ class _LoginViewState extends State<LoginView> {
                     return null;
                   },
                 ),
-                const Gap(24),
-
-                const Align(
+                Gap(24.h),
+                Align(
                   alignment: AlignmentDirectional.centerStart,
                   child: Text(
                     'كلمة المرور',
-                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 10),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 10.sp,
+                      fontFamily: 'Tajawal',
+                    ),
                   ),
                 ),
-                const Gap(8),
+                Gap(8.h),
                 CustomTextField(
                   label: '********',
                   controller: passwordController,
                   isPassword: true,
+                  fontSize: 12.sp,
                   suffixIcon: IconButton(
                     icon: Icon(
                       isPasswordVisible
                           ? Icons.visibility
                           : Icons.visibility_off,
                       color: AppColors.primary,
+                      size: 20.sp,
                     ),
                     onPressed: () {
                       setState(() {
@@ -107,7 +123,6 @@ class _LoginViewState extends State<LoginView> {
                     return null;
                   },
                 ),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -121,10 +136,10 @@ class _LoginViewState extends State<LoginView> {
                             });
                           },
                         ),
-                        const Text(
+                        Text(
                           'تذكرني',
                           style: TextStyle(
-                            fontSize: 10,
+                            fontSize: 10.sp,
                             fontWeight: FontWeight.w400,
                             fontFamily: 'Tajawal',
                           ),
@@ -133,10 +148,10 @@ class _LoginViewState extends State<LoginView> {
                     ),
                     TextButton(
                       onPressed: () {},
-                      child: const Text(
+                      child: Text(
                         'هل نسيت كلمة المرور؟',
                         style: TextStyle(
-                          fontSize: 10,
+                          fontSize: 10.sp,
                           fontWeight: FontWeight.w500,
                           fontFamily: 'Tajawal',
                         ),
@@ -144,8 +159,7 @@ class _LoginViewState extends State<LoginView> {
                     ),
                   ],
                 ),
-                const Gap(24),
-
+                Gap(24.h),
                 GradientButton(
                   text: 'تسجيل الدخول',
                   onPressed: () {
@@ -159,13 +173,14 @@ class _LoginViewState extends State<LoginView> {
                     }
                   },
                 ),
-
-                const Gap(16),
-
+                Gap(16.h),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('ليس لديك حساب؟'),
+                    Text(
+                      'ليس لديك حساب؟',
+                      style: TextStyle(fontSize: 12.sp, fontFamily: 'Tajawal'),
+                    ),
                     TextButton(
                       onPressed: () {
                         Navigator.push(
@@ -175,7 +190,13 @@ class _LoginViewState extends State<LoginView> {
                           ),
                         );
                       },
-                      child: const Text('إنشاء حساب جديد'),
+                      child: Text(
+                        'إنشاء حساب جديد',
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          fontFamily: 'Tajawal',
+                        ),
+                      ),
                     ),
                   ],
                 ),

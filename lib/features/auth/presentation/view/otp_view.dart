@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pinput/pinput.dart';
 import 'package:gap/gap.dart';
 
@@ -28,23 +29,23 @@ class _OtpViewState extends State<OtpView> {
   @override
   Widget build(BuildContext context) {
     final defaultPinTheme = PinTheme(
-      width: 50,
-      height: 60,
-      textStyle: const TextStyle(
-        fontSize: 22,
+      width: 50.w,
+      height: 60.h,
+      textStyle: TextStyle(
+        fontSize: 22.sp,
         color: Colors.black,
         fontWeight: FontWeight.bold,
       ),
       decoration: BoxDecoration(
         color: const Color(0xFFF9F9F9),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: Colors.grey.withOpacity(0.2)),
       ),
     );
 
     final focusedPinTheme = defaultPinTheme.copyWith(
       decoration: defaultPinTheme.decoration!.copyWith(
-        border: Border.all(color: AppColors.primary, width: 1.5),
+        border: Border.all(color: AppColors.primary, width: 1.5.w),
       ),
     );
 
@@ -52,38 +53,39 @@ class _OtpViewState extends State<OtpView> {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
           child: SizedBox(
             width: double.infinity,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Gap(80),
-
-                Image.asset('assets/images/logo.png', width: 178, height: 58),
-
-                const Gap(50),
-
-                const Text(
+                Gap(80.h),
+                Image.asset(
+                  'assets/images/logo.png',
+                  width: 178.w,
+                  height: 58.h,
+                ),
+                Gap(50.h),
+                Text(
                   'رمز التحقق',
                   style: TextStyle(
-                    fontSize: 22,
+                    fontSize: 22.sp,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Tajawal',
                   ),
                 ),
-                const Gap(10),
+                Gap(10.h),
                 Text(
                   'لاستكمال فتح حسابك ادخل رمز التحقق المرسل عبر البريد الإلكتروني\n${widget.email}',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Color(0xff998C8C),
-                    fontSize: 14,
+                  style: TextStyle(
+                    color: const Color(0xff998C8C),
+                    fontSize: 14.sp,
                     height: 1.5,
+                    fontFamily: 'Tajawal',
                   ),
                 ),
-
-                const Gap(40),
+                Gap(40.h),
                 Form(
                   key: _formKey,
                   child: Pinput(
@@ -93,46 +95,53 @@ class _OtpViewState extends State<OtpView> {
                     focusedPinTheme: focusedPinTheme,
                     keyboardType: TextInputType.number,
                     validator: (pin) {
-                      if (pin == null || pin.length < 5)
+                      if (pin == null || pin.length < 5) {
                         return 'الرمز غير مكتمل';
+                      }
                       return null;
                     },
                   ),
                 ),
-
-                const Gap(30),
+                Gap(30.h),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
+                        children: [
                           Text(
                             'إعادة إرسال',
                             style: TextStyle(
                               color: AppColors.primary,
                               fontWeight: FontWeight.w400,
-                              fontSize: 12,
+                              fontSize: 12.sp,
+                              fontFamily: 'Tajawal',
                             ),
                           ),
                           Text(
                             'لم يصلك رمز ؟ ',
-                            style: TextStyle(color: Colors.grey, fontSize: 12),
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 12.sp,
+                              fontFamily: 'Tajawal',
+                            ),
                           ),
                         ],
                       ),
-                      const Text(
+                      Text(
                         '09:58 Sec',
-                        style: TextStyle(color: Colors.grey, fontSize: 10),
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 10.sp,
+                          fontFamily: 'Tajawal',
+                        ),
                       ),
                     ],
                   ),
                 ),
-
-                const Gap(40),
-
+                Gap(40.h),
                 GradientButton(
                   text: 'المتابعة',
                   onPressed: () {
