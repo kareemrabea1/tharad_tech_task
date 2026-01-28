@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:tharad_tech/core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors.dart';
 
 class CustomBackgroundLayout extends StatelessWidget {
   final String title;
   final Widget body;
   final List<Widget>? actions;
+  final bool centerTitle;
 
   const CustomBackgroundLayout({
     super.key,
     required this.title,
     required this.body,
     this.actions,
+    this.centerTitle = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(gradient: AppColors.primaryGradient),
+        decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
         child: SafeArea(
           bottom: false,
           child: Column(
@@ -28,25 +30,46 @@ class CustomBackgroundLayout extends StatelessWidget {
                   horizontal: 20,
                   vertical: 20,
                 ),
-                child: Row(
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Tajawal',
+                child: centerTitle
+                    ? Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Text(
+                            title,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Tajawal',
+                            ),
+                          ),
+                          Align(
+                            alignment: AlignmentDirectional.centerEnd,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: actions ?? [],
+                            ),
+                          ),
+                        ],
+                      )
+                    : Row(
+                        children: [
+                          Text(
+                            title,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Tajawal',
+                            ),
+                          ),
+                          const Spacer(),
+                          if (actions != null) ...actions!,
+                        ],
                       ),
-                    ),
-
-                    const Spacer(),
-                    if (actions != null) ...actions!,
-                  ],
-                ),
               ),
-
               const Gap(10),
+
               Expanded(
                 child: Container(
                   width: double.infinity,
