@@ -1,60 +1,58 @@
 import 'package:flutter/material.dart';
 
-class CustomTextField extends StatefulWidget {
+class CustomTextField extends StatelessWidget {
   final String label;
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final bool isPassword;
   final String? Function(String?)? validator;
   final TextInputType keyboardType;
+  final Widget? suffixIcon;
 
   const CustomTextField({
     super.key,
     required this.label,
-    required this.controller,
+    this.controller,
     this.isPassword = false,
     this.validator,
     this.keyboardType = TextInputType.text,
+    this.suffixIcon,
   });
-
-  @override
-  State<CustomTextField> createState() => _CustomTextFieldState();
-}
-
-class _CustomTextFieldState extends State<CustomTextField> {
-  bool isPasswordHidden = true;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: widget.controller,
-      obscureText: widget.isPassword ? isPasswordHidden : false,
-      keyboardType: widget.keyboardType,
+      controller: controller,
+      obscureText: isPassword,
+      keyboardType: keyboardType,
+      validator: validator,
+      style: const TextStyle(color: Colors.black),
       decoration: InputDecoration(
         filled: true,
         fillColor: const Color(0xFFF4F7F6),
-        labelText: widget.label,
-        labelStyle: TextStyle(
-          fontSize: 10,
-          fontWeight: FontWeight.w500,
+        hintText: label,
+        hintStyle: const TextStyle(
+          color: Colors.grey,
+          fontSize: 12,
           fontFamily: 'Tajawal',
         ),
-        border: const OutlineInputBorder(
-          borderSide: BorderSide(color: Color(0xffF0E6DE)),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
         ),
-        suffixIcon: widget.isPassword
-            ? IconButton(
-                icon: Icon(
-                  isPasswordHidden ? Icons.visibility_off : Icons.visibility,
-                ),
-                onPressed: () {
-                  setState(() {
-                    isPasswordHidden = !isPasswordHidden;
-                  });
-                },
-              )
-            : null,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.withOpacity(0.2)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.withOpacity(0.2)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFF2D8B86)),
+        ),
+        suffixIcon: suffixIcon,
       ),
-      validator: widget.validator,
     );
   }
 }
