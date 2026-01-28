@@ -17,14 +17,13 @@ class SignupView extends StatefulWidget {
 class _SignupViewState extends State<SignupView> {
   final _formKey = GlobalKey<FormState>();
 
-  // Controllers
+ 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
 
-  // Visibility States
   bool isPasswordVisible = false;
   bool isConfirmPasswordVisible = false;
 
@@ -49,7 +48,7 @@ class _SignupViewState extends State<SignupView> {
               key: _formKey,
               child: Column(
                 children: [
-                  // --- Header ---
+                 
                   const Gap(20),
                   Image.asset('assets/images/logo.png', width: 178, height: 58),
                   const Gap(30),
@@ -64,7 +63,7 @@ class _SignupViewState extends State<SignupView> {
                   ),
                   const Gap(24),
 
-                  // --- Image Picker Section ---
+                  
                   const Align(
                     alignment: AlignmentDirectional.centerStart,
                     child: Text(
@@ -117,10 +116,10 @@ class _SignupViewState extends State<SignupView> {
                     ),
                   ),
 
-                  // ... داخل الـ build
+                 
                   const Gap(24),
 
-                  // --- Name Field ---
+              
                   const Align(
                     alignment: AlignmentDirectional.centerStart,
                     child: Text(
@@ -133,7 +132,7 @@ class _SignupViewState extends State<SignupView> {
                   ),
                   const Gap(8),
                   CustomTextField(
-                    label: 'User123', // Placeholder
+                    label: 'User123', 
                     controller: nameController,
                     validator: (value) {
                       if (value == null || value.isEmpty)
@@ -144,7 +143,7 @@ class _SignupViewState extends State<SignupView> {
                   ),
                   const Gap(16),
 
-                  // --- Email Field ---
+                 
                   const Align(
                     alignment: AlignmentDirectional.centerStart,
                     child: Text(
@@ -171,7 +170,7 @@ class _SignupViewState extends State<SignupView> {
                   ),
                   const Gap(16),
 
-                  // --- Password Field ---
+                  
                   const Align(
                     alignment: AlignmentDirectional.centerStart,
                     child: Text(
@@ -186,7 +185,7 @@ class _SignupViewState extends State<SignupView> {
                   CustomTextField(
                     label: '********',
                     controller: passwordController,
-                    isPassword: !isPasswordVisible, // Logic Toggle
+                    isPassword: !isPasswordVisible, 
                     suffixIcon: IconButton(
                       icon: Icon(
                         isPasswordVisible
@@ -210,7 +209,6 @@ class _SignupViewState extends State<SignupView> {
                   ),
                   const Gap(16),
 
-                  // --- Confirm Password Field ---
                   const Align(
                     alignment: AlignmentDirectional.centerStart,
                     child: Text(
@@ -249,27 +247,26 @@ class _SignupViewState extends State<SignupView> {
                   ),
                   const Gap(32),
 
-                  // --- Action Button ---
                   GradientButton(
                     text: 'إنشاء حساب جديد',
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         debugPrint('Signup Success: ${nameController.text}');
-                        // Implement Sign up Logic here
+                       
                       }
                     },
                   ),
 
                   const Gap(16),
 
-                  // --- Footer ---
+                  
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text('لديك حساب ؟'),
                       TextButton(
                         onPressed: () {
-                          // Navigator.pop(context); // Go back to Login
+                       
                         },
                         child: const Text('تسجيل الدخول'),
                       ),
