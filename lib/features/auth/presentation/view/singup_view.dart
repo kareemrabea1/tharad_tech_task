@@ -74,7 +74,9 @@ class _SignupViewState extends State<SignupView> {
                   const Gap(8),
 
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      debugPrint("Open Image Picker");
+                    },
                     child: DottedBorder(
                       dashPattern: <double>[10, 10],
                       color: AppColors.primary,
@@ -125,7 +127,7 @@ class _SignupViewState extends State<SignupView> {
                   ),
                   const Gap(8),
                   CustomTextField(
-                    label: 'User123', // Placeholder
+                    label: 'User123',
                     controller: nameController,
                     validator: (value) {
                       if (value == null || value.isEmpty)
@@ -182,7 +184,7 @@ class _SignupViewState extends State<SignupView> {
                         isPasswordVisible
                             ? Icons.visibility
                             : Icons.visibility_off,
-                        color: AppColors.primary,
+                        color: Colors.grey,
                       ),
                       onPressed: () {
                         setState(() {
@@ -220,7 +222,7 @@ class _SignupViewState extends State<SignupView> {
                         isConfirmPasswordVisible
                             ? Icons.visibility
                             : Icons.visibility_off,
-                        color: AppColors.primary,
+                        color: Colors.grey,
                       ),
                       onPressed: () {
                         setState(() {
