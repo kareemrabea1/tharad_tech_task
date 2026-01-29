@@ -1,16 +1,17 @@
-# tharad_tech
+# Tharad Tech - Flutter Training Task
 
-A new Flutter project.
+A Flutter application featuring full Auth flow, Profile management, and Offline support.
 
-## Getting Started
+## 🚀 Features
+- **Clean Architecture:** Organized by features for scalability.
+- **State Management:** Using BLoC/Cubit for predictable state changes.
+- **Caching (Offline Support):** Powered by **Hive (NoSQL DB)** to store user data and tokens securely.
+- **Form Validation:** Includes 5MB image size limit and password matching.
+- **Image Handling:** Supports picking from gallery/camera and cropping.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🛠️ Tech Stack
+- Flutter & Dart
+- Dio (API calls)
+- Hive (Local Caching)
+- Flutter Bloc (State Management)
+- Image Picker & Cropper
