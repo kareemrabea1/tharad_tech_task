@@ -9,6 +9,7 @@ import '../../widget/custom_text_field.dart';
 import '../../widget/gradient_button.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
+import 'otp_view.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -22,6 +23,7 @@ class _LoginViewState extends State<LoginView> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool rememberMe = false;
+
   @override
   void dispose() {
     emailController.dispose();
@@ -45,6 +47,19 @@ class _LoginViewState extends State<LoginView> {
                 const SnackBar(
                   content: Text("تم تسجيل الدخول بنجاح"),
                   backgroundColor: Colors.green,
+                ),
+              );
+            } else if (state is NeedOtpVerification) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => OtpView(email: state.email),
+                ),
+              );
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("يرجى تفعيل الحساب بالكود المرسل إليك"),
+                  backgroundColor: Colors.orange,
                 ),
               );
             } else if (state is AuthFailure) {
@@ -166,6 +181,7 @@ class _LoginViewState extends State<LoginView> {
                           children: [
                             Checkbox(
                               value: rememberMe,
+                              activeColor: AppColors.primary,
                               onChanged: (value) {
                                 setState(() {
                                   rememberMe = value ?? false;

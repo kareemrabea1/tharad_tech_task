@@ -36,6 +36,11 @@ class OtpFailure extends AuthState {
   const OtpFailure({required this.errMessage});
 }
 
+final class NeedOtpVerification extends AuthState {
+  final String email;
+  const NeedOtpVerification({required this.email});
+}
+
 class AuthPasswordVisibilityChanged extends AuthState {}
 
 class AuthImageSelected extends AuthState {

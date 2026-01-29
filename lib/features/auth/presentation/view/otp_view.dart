@@ -202,7 +202,10 @@ class _OtpViewState extends State<OtpView> {
                               text: 'المتابعة',
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
-                                  cubit.verifyOtp(otpCode: pinController.text);
+                                  cubit.verifyOtp(
+                                    otpCode: pinController.text,
+                                    email: widget.email,
+                                  );
                                 }
                               },
                             ),

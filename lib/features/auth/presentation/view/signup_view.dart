@@ -56,7 +56,7 @@ class _SignupViewState extends State<SignupView> {
                   backgroundColor: Colors.green,
                 ),
               );
-            } else if (state is SignupFailure) {
+            } else if (state is AuthFailure) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(state.errMessage),
@@ -104,6 +104,7 @@ class _SignupViewState extends State<SignupView> {
                         ),
                       ),
                       Gap(8.h),
+
                       GestureDetector(
                         onTap: () {
                           cubit.uploadProfileImage();
@@ -160,7 +161,6 @@ class _SignupViewState extends State<SignupView> {
                         ),
                       ),
                       Gap(24.h),
-
                       Align(
                         alignment: AlignmentDirectional.centerStart,
                         child: Text(
@@ -178,12 +178,9 @@ class _SignupViewState extends State<SignupView> {
                         controller: nameController,
                         fontSize: 12.sp,
                         textInputAction: TextInputAction.next,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'اسم المستخدم مطلوب';
-                          }
-                          return null;
-                        },
+                        validator: (value) => (value == null || value.isEmpty)
+                            ? 'اسم المستخدم مطلوب'
+                            : null,
                       ),
                       Gap(16.h),
 
@@ -206,12 +203,10 @@ class _SignupViewState extends State<SignupView> {
                         textInputAction: TextInputAction.next,
                         fontSize: 12.sp,
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
+                          if (value == null || value.isEmpty)
                             return 'البريد الإلكتروني مطلوب';
-                          }
-                          if (!value.contains('@')) {
+                          if (!value.contains('@'))
                             return 'أدخل بريد إلكتروني صالح';
-                          }
                           return null;
                         },
                       ),
@@ -241,21 +236,16 @@ class _SignupViewState extends State<SignupView> {
                             color: Colors.grey,
                             size: 20.sp,
                           ),
-                          onPressed: () {
-                            cubit.changeSignupPasswordVisibility();
-                          },
+                          onPressed: () =>
+                              cubit.changeSignupPasswordVisibility(),
                         ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'كلمة المرور مطلوبة';
-                          }
-                          if (value.length < 6) {
-                            return 'يجب أن تكون 6 أحرف على الأقل';
-                          }
-                          return null;
-                        },
+                        validator: (value) =>
+                            (value == null || value.length < 6)
+                            ? 'يجب أن تكون 6 أحرف على الأقل'
+                            : null,
                       ),
                       Gap(16.h),
+
                       Align(
                         alignment: AlignmentDirectional.centerStart,
                         child: Text(
@@ -280,27 +270,14 @@ class _SignupViewState extends State<SignupView> {
                             color: Colors.grey,
                             size: 20.sp,
                           ),
-                          onPressed: () {
-                            cubit.changeConfirmPasswordVisibility();
-                          },
+                          onPressed: () =>
+                              cubit.changeConfirmPasswordVisibility(),
                         ),
-                        onFieldSubmitted: (_) {
-                          if (_formKey.currentState!.validate()) {
-                            cubit.userSignup(
-                              name: nameController.text,
-                              email: emailController.text,
-                              password: passwordController.text,
-                              confirmPassword: confirmPasswordController.text,
-                            );
-                          }
-                        },
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
+                          if (value == null || value.isEmpty)
                             return 'تأكيد كلمة المرور مطلوب';
-                          }
-                          if (value != passwordController.text) {
+                          if (value != passwordController.text)
                             return 'كلمات المرور غير متطابقة';
-                          }
                           return null;
                         },
                       ),
@@ -341,9 +318,7 @@ class _SignupViewState extends State<SignupView> {
                             ),
                           ),
                           TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
+                            onPressed: () => Navigator.pop(context),
                             child: Text(
                               'تسجيل الدخول',
                               style: TextStyle(

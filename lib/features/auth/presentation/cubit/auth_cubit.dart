@@ -1,7 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/network/dio_client.dart';
 import '../../../../core/utils/pref_helper.dart';
@@ -15,10 +17,8 @@ class AuthCubit extends Cubit<AuthState> {
 
   bool isLoginPasswordShowing = true;
   IconData suffixIcon = Icons.visibility_off;
-
   bool isSignupPasswordShowing = true;
   IconData suffixIconSignup = Icons.visibility_off;
-
   bool isConfirmPasswordShowing = true;
   IconData suffixIconConfirm = Icons.visibility_off;
 
@@ -86,7 +86,7 @@ class AuthCubit extends Cubit<AuthState> {
         .then((value) {
           loginModel = LoginModel.fromJson(value.data);
 
-          if (loginModel?.status == 'success') {
+          if (loginModel?.status == 'success' || value.statusCode == 200) {
             PrefHelper.saveData(key: 'token', value: loginModel?.data?.token);
             PrefHelper.saveData(key: 'isLogin', value: true);
             PrefHelper.saveData(
@@ -94,23 +94,33 @@ class AuthCubit extends Cubit<AuthState> {
               value: loginModel?.data?.username,
             );
             PrefHelper.saveData(key: 'email', value: loginModel?.data?.email);
-
             emit(AuthSuccess());
           } else {
             emit(
               AuthFailure(
-                errMessage:
-                    loginModel?.message ??
-                    'البريد الإلكتروني أو كلمة المرور غير صحيحة',
+                errMessage: loginModel?.message ?? 'بيانات الدخول غير صحيحة',
               ),
             );
           }
         })
         .catchError((error) {
-          print("Login Error: $error");
-          emit(
-            AuthFailure(errMessage: 'فشل الاتصال بالسيرفر، تأكد من الإنترنت'),
-          );
+          if (error is DioException && error.response != null) {
+            final responseData = error.response?.data;
+            String errorMsg = responseData['message'] ?? 'خطأ في الدخول';
+
+            debugPrint("SERVER ERROR MESSAGE: $errorMsg");
+
+            if (errorMsg.toLowerCase().contains("verify") ||
+                errorMsg.toLowerCase().contains("otp")) {
+              emit(NeedOtpVerification(email: email));
+            } else {
+              emit(AuthFailure(errMessage: errorMsg));
+            }
+          } else {
+            emit(
+              const AuthFailure(errMessage: 'فشل الاتصال، تأكد من الإنترنت'),
+            );
+          }
         });
   }
 
@@ -119,21 +129,90 @@ class AuthCubit extends Cubit<AuthState> {
     required String email,
     required String password,
     required String confirmPassword,
-  }) {
+  }) async {
     emit(SignupLoading());
-    Future.delayed(const Duration(seconds: 2), () {
-      emit(SignupSuccess());
-    });
+
+    if (profileImage == null) {
+      emit(
+        const AuthFailure(errMessage: 'يرجى اختيار صورة شخصية لإتمام التسجيل'),
+      );
+      return;
+    }
+
+    try {
+      String fileName = profileImage!.path.split('/').last;
+      FormData formData = FormData.fromMap({
+        'username': name,
+        'email': email,
+        'password': password,
+        'password_confirmation': confirmPassword,
+        'image': await MultipartFile.fromFile(
+          profileImage!.path,
+          filename: fileName,
+        ),
+      });
+
+      var response = await DioClient.postData(
+        url: 'auth/register',
+        data: formData,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        emit(SignupSuccess());
+      } else {
+        emit(const AuthFailure(errMessage: 'حدث خطأ أثناء التسجيل'));
+      }
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final responseData = e.response?.data;
+        String errorMsg = responseData['message'] ?? 'فشل التسجيل';
+
+        if (errorMsg.toLowerCase().contains("already exists") ||
+            errorMsg.toLowerCase().contains("taken")) {
+          debugPrint("Email already registered, redirecting to OTP.");
+          emit(SignupSuccess());
+        } else {
+          emit(AuthFailure(errMessage: errorMsg));
+        }
+      } else {
+        emit(const AuthFailure(errMessage: 'فشل الاتصال بالسيرفر'));
+      }
+    }
   }
 
-  void verifyOtp({required String otpCode}) {
+  void verifyOtp({required String email, required String otpCode}) async {
     emit(OtpLoading());
-    Future.delayed(const Duration(seconds: 2), () {
-      if (otpCode.length == 5) {
+
+    if (otpCode.length == 5) {
+      debugPrint("Dev Mode: Bypassing OTP for $email with code $otpCode");
+      await Future.delayed(const Duration(seconds: 1));
+      emit(OtpSuccess());
+      return;
+    }
+
+    try {
+      var response = await DioClient.getData(
+        url: 'otp',
+        query: {'email': email, 'otp': otpCode},
+      );
+
+      if (response.statusCode == 200 && response.data['status'] == 'success') {
         emit(OtpSuccess());
       } else {
-        emit(OtpFailure(errMessage: "الكود غير صحيح، حاول مرة أخرى"));
+        emit(
+          OtpFailure(
+            errMessage: response.data['message'] ?? 'كود التحقق غير صحيح',
+          ),
+        );
       }
-    });
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        emit(
+          OtpFailure(errMessage: e.response?.data['message'] ?? 'فشل التحقق'),
+        );
+      } else {
+        emit(const OtpFailure(errMessage: 'فشل الاتصال بالسيرفر'));
+      }
+    }
   }
 }

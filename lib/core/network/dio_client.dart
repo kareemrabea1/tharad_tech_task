@@ -9,8 +9,8 @@ class DioClient {
       BaseOptions(
         baseUrl: 'https://flutter.tharadtech.com/api/',
         receiveDataWhenStatusError: true,
-        connectTimeout: const Duration(seconds: 20),
-        receiveTimeout: const Duration(seconds: 20),
+        connectTimeout: const Duration(seconds: 60),
+        receiveTimeout: const Duration(seconds: 60),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -46,13 +46,12 @@ class DioClient {
 
   static Future<Response> postData({
     required String url,
-    required Map<String, dynamic> data,
+    required dynamic data,
     Map<String, dynamic>? query,
     String? token,
   }) async {
     dio.options.headers = {
       'Authorization': token != null ? 'Bearer $token' : '',
-      'Content-Type': 'application/json',
       'Accept': 'application/json',
     };
     return await dio.post(url, queryParameters: query, data: data);
