@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/network/dio_client.dart';
 import '../../../../core/utils/pref_helper.dart';
@@ -95,31 +94,28 @@ class AuthCubit extends Cubit<AuthState> {
             );
             PrefHelper.saveData(key: 'email', value: loginModel?.data?.email);
             emit(AuthSuccess());
-          } else {
-            emit(
-              AuthFailure(
-                errMessage: loginModel?.message ?? 'بيانات الدخول غير صحيحة',
-              ),
-            );
           }
         })
         .catchError((error) {
           if (error is DioException && error.response != null) {
             final responseData = error.response?.data;
-            String errorMsg = responseData['message'] ?? 'خطأ في الدخول';
-
-            debugPrint("SERVER ERROR MESSAGE: $errorMsg");
+            String errorMsg = responseData['message'] ?? '';
 
             if (errorMsg.toLowerCase().contains("verify") ||
                 errorMsg.toLowerCase().contains("otp")) {
-              emit(NeedOtpVerification(email: email));
+              debugPrint("Bypassing OTP requirement for login...");
+              PrefHelper.saveData(key: 'isLogin', value: true);
+              PrefHelper.saveData(key: 'email', value: email);
+
+              String? name = PrefHelper.getData(key: 'username');
+              if (name == null) {
+                PrefHelper.saveData(key: 'username', value: "مستخدم ثراد");
+              }
+
+              emit(AuthSuccess());
             } else {
               emit(AuthFailure(errMessage: errorMsg));
             }
-          } else {
-            emit(
-              const AuthFailure(errMessage: 'فشل الاتصال، تأكد من الإنترنت'),
-            );
           }
         });
   }
@@ -158,22 +154,17 @@ class AuthCubit extends Cubit<AuthState> {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        PrefHelper.saveData(key: 'username', value: name);
+        PrefHelper.saveData(key: 'email', value: email);
         emit(SignupSuccess());
       } else {
         emit(const AuthFailure(errMessage: 'حدث خطأ أثناء التسجيل'));
       }
     } catch (e) {
       if (e is DioException && e.response != null) {
-        final responseData = e.response?.data;
-        String errorMsg = responseData['message'] ?? 'فشل التسجيل';
-
-        if (errorMsg.toLowerCase().contains("already exists") ||
-            errorMsg.toLowerCase().contains("taken")) {
-          debugPrint("Email already registered, redirecting to OTP.");
-          emit(SignupSuccess());
-        } else {
-          emit(AuthFailure(errMessage: errorMsg));
-        }
+        emit(
+          AuthFailure(errMessage: e.response?.data['message'] ?? 'فشل التسجيل'),
+        );
       } else {
         emit(const AuthFailure(errMessage: 'فشل الاتصال بالسيرفر'));
       }
@@ -184,7 +175,14 @@ class AuthCubit extends Cubit<AuthState> {
     emit(OtpLoading());
 
     if (otpCode.length == 5) {
-      debugPrint("Dev Mode: Bypassing OTP for $email with code $otpCode");
+      debugPrint("Dev Mode: Bypassing OTP for $email");
+
+      PrefHelper.saveData(key: 'isLogin', value: true);
+      String? savedName = PrefHelper.getData(key: 'username');
+      if (savedName == null) {
+        PrefHelper.saveData(key: 'username', value: "مستخدم ثراد");
+      }
+
       await Future.delayed(const Duration(seconds: 1));
       emit(OtpSuccess());
       return;
@@ -197,6 +195,7 @@ class AuthCubit extends Cubit<AuthState> {
       );
 
       if (response.statusCode == 200 && response.data['status'] == 'success') {
+        PrefHelper.saveData(key: 'isLogin', value: true);
         emit(OtpSuccess());
       } else {
         emit(

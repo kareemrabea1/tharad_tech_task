@@ -1,10 +1,28 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/utils/pref_helper.dart';
 import 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(HomeInitial());
 
   static HomeCubit get(context) => BlocProvider.of(context);
+
+  String? userName;
+  String? userEmail;
+
+  void getUserData() {
+    emit(HomeLoading());
+    try {
+      userName = PrefHelper.getData(key: 'username');
+      userEmail = PrefHelper.getData(key: 'email');
+
+      print("Home Data Loaded: $userName, $userEmail");
+
+      emit(HomeDataSuccess());
+    } catch (e) {
+      emit(HomeDataError("فشل في تحميل بيانات المستخدم"));
+    }
+  }
 
   final String aboutTrainingText = """
 تدريب Flutter ده مش كورس تعليمي تقليدي،
@@ -28,4 +46,10 @@ class HomeCubit extends Cubit<HomeState> {
     '"إصلاح Bugs وتحسين الأداء"',
     "الالتزام بـ Clean Code و Architecture واضحة",
   ];
+
+  int currentIndex = 0;
+  void changeBottomNav(int index) {
+    currentIndex = index;
+    emit(HomeChangeBottomNavState()); // لازم تضيف الحالة دي في home_state.dart
+  }
 }
