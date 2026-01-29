@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../../../core/database/cache/cache_helper.dart';
+import '../../../../core/network/dio_client.dart';
+import '../../../../core/utils/pref_helper.dart';
+import '../../data/model/login_model.dart';
 import 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
@@ -21,6 +23,7 @@ class AuthCubit extends Cubit<AuthState> {
   IconData suffixIconConfirm = Icons.visibility_off;
 
   XFile? profileImage;
+  LoginModel? loginModel;
 
   void changeLoginPasswordVisibility() {
     isLoginPasswordShowing = !isLoginPasswordShowing;
@@ -48,7 +51,6 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> uploadProfileImage() async {
     final ImagePicker picker = ImagePicker();
-
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
     if (image != null) {
@@ -76,18 +78,40 @@ class AuthCubit extends Cubit<AuthState> {
 
   void userLogin({required String email, required String password}) {
     emit(AuthLoading());
-    Future.delayed(const Duration(seconds: 2), () {
-      if (email == 'test@gmail.com' && password == '123456') {
-        CacheHelper.saveData(key: 'isLogin', value: true);
-        emit(AuthSuccess());
-      } else {
-        emit(
-          const AuthFailure(
-            errMessage: 'البريد الإلكتروني أو كلمة المرور غير صحيحة',
-          ),
-        );
-      }
-    });
+
+    DioClient.postData(
+          url: 'auth/login',
+          data: {'email': email, 'password': password},
+        )
+        .then((value) {
+          loginModel = LoginModel.fromJson(value.data);
+
+          if (loginModel?.status == 'success') {
+            PrefHelper.saveData(key: 'token', value: loginModel?.data?.token);
+            PrefHelper.saveData(key: 'isLogin', value: true);
+            PrefHelper.saveData(
+              key: 'username',
+              value: loginModel?.data?.username,
+            );
+            PrefHelper.saveData(key: 'email', value: loginModel?.data?.email);
+
+            emit(AuthSuccess());
+          } else {
+            emit(
+              AuthFailure(
+                errMessage:
+                    loginModel?.message ??
+                    'البريد الإلكتروني أو كلمة المرور غير صحيحة',
+              ),
+            );
+          }
+        })
+        .catchError((error) {
+          print("Login Error: $error");
+          emit(
+            AuthFailure(errMessage: 'فشل الاتصال بالسيرفر، تأكد من الإنترنت'),
+          );
+        });
   }
 
   void userSignup({
@@ -108,7 +132,7 @@ class AuthCubit extends Cubit<AuthState> {
       if (otpCode.length == 5) {
         emit(OtpSuccess());
       } else {
-        emit(const OtpFailure(errMessage: "الكود غير صحيح، حاول مرة أخرى"));
+        emit(OtpFailure(errMessage: "الكود غير صحيح، حاول مرة أخرى"));
       }
     });
   }
