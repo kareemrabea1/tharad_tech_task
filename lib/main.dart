@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'core/network/dio_client.dart';
 import 'core/utils/pref_helper.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
@@ -10,7 +11,10 @@ import 'features/splash/presentation/view/splash_view.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await Hive.initFlutter();
+
   await PrefHelper.init();
+
   DioClient.init();
   runApp(const MyApp());
 }

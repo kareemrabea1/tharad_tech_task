@@ -46,7 +46,6 @@ class _SplashViewState extends State<SplashView> {
           children: [
             Image.asset('assets/images/logo.png', width: 200.w, height: 200.h),
             Gap(20.h),
-            const CircularProgressIndicator(),
           ],
         ),
       ),

@@ -36,11 +36,7 @@ class DioClient {
     Map<String, dynamic>? query,
     String? token,
   }) async {
-    dio.options.headers = {
-      'Authorization': token != null ? 'Bearer $token' : '',
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    };
+    dio.options.headers['Authorization'] = token != null ? 'Bearer $token' : '';
     return await dio.get(url, queryParameters: query);
   }
 
@@ -50,10 +46,14 @@ class DioClient {
     Map<String, dynamic>? query,
     String? token,
   }) async {
-    dio.options.headers = {
-      'Authorization': token != null ? 'Bearer $token' : '',
-      'Accept': 'application/json',
-    };
+    dio.options.headers['Authorization'] = token != null ? 'Bearer $token' : '';
+
+    if (data is FormData) {
+      dio.options.headers['Content-Type'] = 'multipart/form-data';
+    } else {
+      dio.options.headers['Content-Type'] = 'application/json';
+    }
+
     return await dio.post(url, queryParameters: query, data: data);
   }
 }

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,7 +18,7 @@ class ProfileView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ProfileCubit(),
+      create: (context) => ProfileCubit()..getProfileData(),
       child: BlocConsumer<ProfileCubit, ProfileState>(
         listener: (context, state) {
           if (state is ProfileUpdateSuccess) {
@@ -50,6 +49,13 @@ class ProfileView extends StatelessWidget {
                     ),
                   ),
                 ),
+              ),
+            );
+          } else if (state is ProfileUpdateFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.errMessage),
+                backgroundColor: Colors.red,
               ),
             );
           }
@@ -91,7 +97,7 @@ class ProfileView extends StatelessWidget {
                     CustomTextField(
                       label: "اسم المستخدم",
                       controller: cubit.nameController,
-                      fontSize: 12.sp,
+                      fontSize: 10.sp,
                     ),
                     Gap(16.h),
 
@@ -100,7 +106,7 @@ class ProfileView extends StatelessWidget {
                       label: "البريد الإلكتروني",
                       controller: cubit.emailController,
                       keyboardType: TextInputType.emailAddress,
-                      fontSize: 12.sp,
+                      fontSize: 10.sp,
                     ),
                     Gap(24.h),
 

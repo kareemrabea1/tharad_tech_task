@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:tharad_tech/core/constants/app_colors.dart';
-
 import '../../widget/custom_background.dart';
 import '../../widget/feature_item.dart';
 import '../cubit/home_cubit.dart';
@@ -73,12 +72,10 @@ class HomeView extends StatelessWidget {
                             fontFamily: 'Tajawal',
                           ),
                         ),
-                        Gap(10.h),
                       ],
                     ),
                   ),
                   Gap(24.h),
-
                   Text(
                     "عن التدريب",
                     style: TextStyle(
@@ -98,7 +95,6 @@ class HomeView extends StatelessWidget {
                     ),
                   ),
                   Gap(24.h),
-
                   Text(
                     "طبيعة الشغل أثناء التدريب",
                     style: TextStyle(
@@ -108,17 +104,14 @@ class HomeView extends StatelessWidget {
                     ),
                   ),
                   Gap(16.h),
-
                   ListView.separated(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: cubit.trainingFeatures.length,
-                    separatorBuilder: (context, index) => Gap(8.h),
-                    itemBuilder: (context, index) {
-                      return FeatureItem(text: cubit.trainingFeatures[index]);
-                    },
+                    separatorBuilder: (context, index) => Gap(1.h),
+                    itemBuilder: (context, index) =>
+                        FeatureItem(text: cubit.trainingFeatures[index]),
                   ),
-
                   Gap(100.h),
                 ],
               ),

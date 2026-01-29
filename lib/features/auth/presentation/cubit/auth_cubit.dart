@@ -53,6 +53,14 @@ class AuthCubit extends Cubit<AuthState> {
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
     if (image != null) {
+      var imageBytes = await image.length();
+      if (imageBytes > 5 * 1024 * 1024) {
+        emit(
+          AuthFailure(errMessage: 'حجم الصورة كبير جداً، الحد الأقصى 5 ميجا'),
+        );
+        return;
+      }
+
       CroppedFile? croppedFile = await ImageCropper().cropImage(
         sourcePath: image.path,
         aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
@@ -77,41 +85,44 @@ class AuthCubit extends Cubit<AuthState> {
 
   void userLogin({required String email, required String password}) {
     emit(AuthLoading());
-
     DioClient.postData(
           url: 'auth/login',
           data: {'email': email, 'password': password},
         )
-        .then((value) {
+        .then((value) async {
           loginModel = LoginModel.fromJson(value.data);
-
           if (loginModel?.status == 'success' || value.statusCode == 200) {
-            PrefHelper.saveData(key: 'token', value: loginModel?.data?.token);
-            PrefHelper.saveData(key: 'isLogin', value: true);
-            PrefHelper.saveData(
+            await PrefHelper.saveData(
+              key: 'token',
+              value: loginModel?.data?.token,
+            );
+            await PrefHelper.saveData(key: 'isLogin', value: true);
+            await PrefHelper.saveData(
               key: 'username',
               value: loginModel?.data?.username,
             );
-            PrefHelper.saveData(key: 'email', value: loginModel?.data?.email);
+            await PrefHelper.saveData(
+              key: 'email',
+              value: loginModel?.data?.email,
+            );
             emit(AuthSuccess());
           }
         })
-        .catchError((error) {
+        .catchError((error) async {
           if (error is DioException && error.response != null) {
             final responseData = error.response?.data;
             String errorMsg = responseData['message'] ?? '';
-
             if (errorMsg.toLowerCase().contains("verify") ||
                 errorMsg.toLowerCase().contains("otp")) {
-              debugPrint("Bypassing OTP requirement for login...");
-              PrefHelper.saveData(key: 'isLogin', value: true);
-              PrefHelper.saveData(key: 'email', value: email);
-
-              String? name = PrefHelper.getData(key: 'username');
-              if (name == null) {
-                PrefHelper.saveData(key: 'username', value: "مستخدم ثراد");
+              await PrefHelper.saveData(key: 'isLogin', value: true);
+              await PrefHelper.saveData(key: 'email', value: email);
+              String? currentName = PrefHelper.getData(key: 'username');
+              if (currentName == null || currentName.isEmpty) {
+                await PrefHelper.saveData(
+                  key: 'username',
+                  value: "مستخدم ثراد",
+                );
               }
-
               emit(AuthSuccess());
             } else {
               emit(AuthFailure(errMessage: errorMsg));
@@ -127,14 +138,12 @@ class AuthCubit extends Cubit<AuthState> {
     required String confirmPassword,
   }) async {
     emit(SignupLoading());
-
     if (profileImage == null) {
       emit(
         const AuthFailure(errMessage: 'يرجى اختيار صورة شخصية لإتمام التسجيل'),
       );
       return;
     }
-
     try {
       String fileName = profileImage!.path.split('/').last;
       FormData formData = FormData.fromMap({
@@ -154,8 +163,14 @@ class AuthCubit extends Cubit<AuthState> {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        PrefHelper.saveData(key: 'username', value: name);
-        PrefHelper.saveData(key: 'email', value: email);
+        await PrefHelper.saveData(key: 'username', value: name);
+        await PrefHelper.saveData(key: 'email', value: email);
+
+        await PrefHelper.saveData(
+          key: 'userImageLocal',
+          value: profileImage!.path,
+        );
+
         emit(SignupSuccess());
       } else {
         emit(const AuthFailure(errMessage: 'حدث خطأ أثناء التسجيل'));
@@ -173,29 +188,22 @@ class AuthCubit extends Cubit<AuthState> {
 
   void verifyOtp({required String email, required String otpCode}) async {
     emit(OtpLoading());
-
     if (otpCode.length == 5) {
-      debugPrint("Dev Mode: Bypassing OTP for $email");
-
-      PrefHelper.saveData(key: 'isLogin', value: true);
+      await PrefHelper.saveData(key: 'isLogin', value: true);
       String? savedName = PrefHelper.getData(key: 'username');
       if (savedName == null) {
-        PrefHelper.saveData(key: 'username', value: "مستخدم ثراد");
+        await PrefHelper.saveData(key: 'username', value: "مستخدم ثراد");
       }
-
-      await Future.delayed(const Duration(seconds: 1));
       emit(OtpSuccess());
       return;
     }
-
     try {
       var response = await DioClient.getData(
         url: 'otp',
         query: {'email': email, 'otp': otpCode},
       );
-
       if (response.statusCode == 200 && response.data['status'] == 'success') {
-        PrefHelper.saveData(key: 'isLogin', value: true);
+        await PrefHelper.saveData(key: 'isLogin', value: true);
         emit(OtpSuccess());
       } else {
         emit(

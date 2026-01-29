@@ -2,6 +2,8 @@ abstract class ProfileState {}
 
 class ProfileInitial extends ProfileState {}
 
+class ProfileDataLoaded extends ProfileState {}
+
 class ProfileUpdateLoading extends ProfileState {}
 
 class ProfileUpdateSuccess extends ProfileState {}

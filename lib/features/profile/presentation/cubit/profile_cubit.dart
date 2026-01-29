@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tharad_tech/core/constants/app_colors.dart';
+import 'package:tharad_tech/core/utils/pref_helper.dart';
 import 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
@@ -10,13 +11,8 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   static ProfileCubit get(context) => BlocProvider.of(context);
 
-  final TextEditingController nameController = TextEditingController(
-    text: "thar22",
-  );
-  final TextEditingController emailController = TextEditingController(
-    text: "Tharad@gmail.com",
-  );
-
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController oldPasswordController = TextEditingController();
   final TextEditingController newPasswordController = TextEditingController();
   final TextEditingController confirmPasswordController =
@@ -24,11 +20,32 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   XFile? profileImage;
 
+  void getProfileData() {
+    nameController.text = PrefHelper.getData(key: 'username') ?? "";
+    emailController.text = PrefHelper.getData(key: 'email') ?? "";
+
+    String? localImagePath = PrefHelper.getData(key: 'userImageLocal');
+    if (localImagePath != null) {
+      profileImage = XFile(localImagePath);
+    }
+    emit(ProfileDataLoaded());
+  }
+
   Future<void> uploadProfileImage() async {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
     if (image != null) {
+      var imageBytes = await image.length();
+      if (imageBytes > 5 * 1024 * 1024) {
+        emit(
+          ProfileUpdateFailure(
+            errMessage: "حجم الصورة كبير جداً، الحد الأقصى 5 ميجا",
+          ),
+        );
+        return;
+      }
+
       CroppedFile? croppedFile = await ImageCropper().cropImage(
         sourcePath: image.path,
         aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
@@ -51,11 +68,24 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
-  void updateProfileData() {
+  void updateProfileData() async {
     emit(ProfileUpdateLoading());
-    Future.delayed(const Duration(seconds: 2), () {
+    try {
+      await PrefHelper.saveData(key: 'username', value: nameController.text);
+      await PrefHelper.saveData(key: 'email', value: emailController.text);
+
+      if (profileImage != null) {
+        await PrefHelper.saveData(
+          key: 'userImageLocal',
+          value: profileImage!.path,
+        );
+      }
+
+      await Future.delayed(const Duration(milliseconds: 500));
       emit(ProfileUpdateSuccess());
-    });
+    } catch (e) {
+      emit(ProfileUpdateFailure(errMessage: "فشل تحديث البيانات محلياً"));
+    }
   }
 
   @override

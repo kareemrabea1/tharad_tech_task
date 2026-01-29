@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:tharad_tech/core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../home/presentation/view/home_view.dart';
 import '../../../home/presentation/cubit/home_cubit.dart';
+import '../../../profile/presentation/view/profile_view.dart';
 import '../cubit/main_layout_cubit.dart';
 import '../cubit/main_layout_state.dart';
 
@@ -11,6 +12,8 @@ class MainLayoutView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> screens = [const HomeView(), const ProfileView()];
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => MainCubit()),
@@ -23,58 +26,26 @@ class MainLayoutView extends StatelessWidget {
           return Directionality(
             textDirection: TextDirection.rtl,
             child: Scaffold(
-              body: cubit.screens[cubit.currentIndex],
-
-              bottomNavigationBar: Container(
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 10.r,
-                      offset: Offset(0, -5.h),
-                    ),
-                  ],
-                ),
-                child: BottomNavigationBar(
-                  currentIndex: cubit.currentIndex,
-                  onTap: (index) {
-                    cubit.changeBottomNav(index);
-                  },
-                  backgroundColor: Colors.white,
-                  selectedItemColor: AppColors.primary,
-                  unselectedItemColor: Colors.grey,
-                  selectedLabelStyle: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Tajawal',
-                    fontSize: 12.sp,
+              body: screens[cubit.currentIndex],
+              bottomNavigationBar: BottomNavigationBar(
+                currentIndex: cubit.currentIndex,
+                onTap: (index) {
+                  cubit.changeBottomNav(index);
+                  if (index == 0) {
+                    HomeCubit.get(context).refreshUserData();
+                  }
+                },
+                selectedItemColor: AppColors.primary,
+                items: const [
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.home_outlined),
+                    label: 'الرئيسية',
                   ),
-                  unselectedLabelStyle: TextStyle(
-                    fontFamily: 'Tajawal',
-                    fontSize: 12.sp,
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.account_circle_outlined),
+                    label: 'حسابي',
                   ),
-                  type: BottomNavigationBarType.fixed,
-                  elevation: 0,
-                  items: [
-                    BottomNavigationBarItem(
-                      icon: Icon(
-                        cubit.currentIndex == 0
-                            ? Icons.home
-                            : Icons.home_outlined,
-                        size: 24.sp,
-                      ),
-                      label: 'الرئيسية',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(
-                        cubit.currentIndex == 1
-                            ? Icons.account_circle
-                            : Icons.account_circle_outlined,
-                        size: 24.sp,
-                      ),
-                      label: 'حسابي',
-                    ),
-                  ],
-                ),
+                ],
               ),
             ),
           );
