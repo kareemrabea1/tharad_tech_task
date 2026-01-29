@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/database/cache/cache_helper.dart';
 import 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
@@ -77,6 +78,7 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
     Future.delayed(const Duration(seconds: 2), () {
       if (email == 'test@gmail.com' && password == '123456') {
+        CacheHelper.saveData(key: 'isLogin', value: true);
         emit(AuthSuccess());
       } else {
         emit(
